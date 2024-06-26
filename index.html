@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MongoDB Collections</title>
+</head>
+<body>
+    <h1>MongoDB Collections</h1>
+    <select id="collectionsSelect" onchange="fetchDocuments()">
+        <option value="">Select a collection</option>
+    </select>
+    <div id="documents"></div>
+
+    <script>
+        async function fetchCollections() {
+            try {
+                const response = await fetch('/zz');
+                const data = await response.json();
+                const select = document.getElementById('collectionsSelect');
+                data.collections.forEach(collection => {
+                    const option = document.createElement('option');
+                    option.value = collection;
+                    option.textContent = collection;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching collections:', error);
+            }
+        }
+
+        async function fetchDocuments() {
+            const collectionName = document.getElementById('collectionsSelect').value;
+            if (!collectionName) return;
+
+            try {
+                const response = await fetch(`/collections/${collectionName}`);
+                const documents = await response.json();
+                const documentsDiv = document.getElementById('documents');
+                documentsDiv.innerHTML = `<h2>Documents in ${collectionName}</h2>`;
+                documents.forEach(doc => {
+                    const pre = document.createElement('pre');
+                    pre.textContent = JSON.stringify(doc, null, 2);
+                    documentsDiv.appendChild(pre);
+                });
+            } catch (error) {
+                console.error('Error fetching documents:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchCollections);
+    </script>
+</body>
+</html>
