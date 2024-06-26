@@ -1,8 +1,8 @@
 var credentials ={
 
 	credentials: {
-		client_id: 'dqrEtryUxaLnXKzdZCjGGO3kFrDtAOqnrwtDcq2zGQpuRAn5',
-		client_secret: '3J2A1LsuAQY4Kf5yGAtRFgwrfTpVgus8jrfwdAyXLMC89ejRkQHLrsBRQV59ZcEs',
+		client_id: 'QArSSWwAysk7fOe2iescDEqVXQB0zTt4EZu4arG3Ts0TbYI6',
+		client_secret: 'J8yXfAznakGW117GzxWtR6RqN72RS5jv0E9cDWa2kIi1qE5QGfdTH1p7rqlb6HGy',
 		grant_type: 'client_credentials',
 		scope: 'viewables:read',
 
