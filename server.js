@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 // const User = require('./models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { getPublicToken } = require('./credentials.js')
 
 const app = express();
 
@@ -28,7 +29,7 @@ app.use(bodyParser.json());
 // Parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8089;
 
 // Connect to MongoDB database
 db.mongoose.connect(db.cloudUrl, { useUnifiedTopology: true })
@@ -60,16 +61,13 @@ require("./models/doorModel");
 require("./routes/doorRoutes")(app);
 
 // Get access token for React front end
-app.get('/token', (req, res) => {
-    request.post(
-        credentials.Authentication,
-        { form: credentials.credentials },
-        (error, response, body) => {
-            if (!error && response.statusCode == 200) {
-                res.json(JSON.parse(body));
-            }
-        }
-    );
+app.get('/token', async (req, res) => {
+    try {
+        res.json(await getPublicToken());
+    } catch (err) {
+        next(err);
+    }
+    console.log(credentials.Authentication)
 });
 
 

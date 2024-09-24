@@ -1,19 +1,30 @@
-var credentials ={
+const { SdkManagerBuilder } = require('@aps_sdk/autodesk-sdkmanager');
+const { AuthenticationClient, Scopes } = require('@aps_sdk/authentication');
+const { OssClient, CreateBucketsPayloadPolicyKeyEnum, CreateBucketXAdsRegionEnum } = require('@aps_sdk/oss');
+const { ModelDerivativeClient, View, Type } = require('@aps_sdk/model-derivative');
+const { APS_CLIENT_ID, APS_CLIENT_SECRET, APS_BUCKET } = require('./config.js');
 
-	credentials: {
-		client_id: 'QArSSWwAysk7fOe2iescDEqVXQB0zTt4EZu4arG3Ts0TbYI6',
-		client_secret: 'J8yXfAznakGW117GzxWtR6RqN72RS5jv0E9cDWa2kIi1qE5QGfdTH1p7rqlb6HGy',
-		grant_type: 'client_credentials',
-		scope: 'viewables:read',
+const sdk = SdkManagerBuilder.create().build();
+const authenticationClient = new AuthenticationClient(sdk);
+const ossClient = new OssClient(sdk);
+const modelDerivativeClient = new ModelDerivativeClient(sdk);
 
-	},
-	
-	//Autodesk Forge base url
-	BaseUrl: 'https://developer.api.autodesk.com',
-	Version: 'v1'
-} ;
+const service = module.exports = {};
 
-credentials.Authentication = credentials.BaseUrl + '/authentication/' + credentials.Version + '/authenticate'
+service.getInternalToken = async () => {
+    const credentials = await authenticationClient.getTwoLeggedToken(APS_CLIENT_ID, APS_CLIENT_SECRET, [
+        Scopes.DataRead,
+        Scopes.DataCreate,
+        Scopes.DataWrite,
+        Scopes.BucketCreate,
+        Scopes.BucketRead
+    ]);
+    return credentials;
+};
 
-
-module.exports = credentials;
+service.getPublicToken = async () => {
+    const credentials = await authenticationClient.getTwoLeggedToken(APS_CLIENT_ID, APS_CLIENT_SECRET, [
+        Scopes.DataRead
+    ]);
+    return credentials;
+};
